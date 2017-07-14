@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DCC104 - Exercicio 03</title>
+    <script src="Sprite.js" charset="utf-8"></script>
+    <script src="Level.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1>DCC104 - Exemplo 03</h1>
+    <canvas></canvas>
+    <script>
+      var eCanvas = document.getElementsByTagName("canvas")[0];
+      eCanvas.width = 600;
+      eCanvas.height = 400;
+      var ctx = eCanvas.getContext("2d");
+      var player = new Sprite();
+      player.x = 200;
+      player.y = 200;
+      player.width = 30;
+      player.height = 30;
+      var fps = 120;
+      var atual = new Date();
+      var anterior = new Date();
+      var dt = 1/fps;
+      var level = new Level();
+      var game = true;
+      var cooldown = 0;
+      loop();
+
+
+
+
+      function loop(){
+
+        requestAnimationFrame(loop);
+        if(player.vidas!=0){
+        atual = new Date();
+        dt = (atual - anterior)/1000;
+        ctx.clearRect(0,0,eCanvas.width, eCanvas.height);
+        ctx.fillStyle = "darkgreen";
+        ctx.strokeRect(0,0,eCanvas.width, eCanvas.height);
+        ctx.fillText("dt: "+dt+" fps:"+Math.floor(1/dt), 10, 10);
+      //  level.desenharVida(ctx, player);
+        player.desenha(ctx);
+        player.mover(dt);
+        level.desenhar(ctx);
+        level.mover(dt);
+        level.randomicEnemy(dt);
+        level.colidiuComPlayer(player);
+        cooldown -=dt;
+      //  level.colidiuComPlayer(player);
+    //    level.colidiuComTiros(player);
+      //  player.cooldown -=dt;
+       anterior = atual;
+
+      }else{
+        ctx.clearRect(0,0,eCanvas.width, eCanvas.height);
+        ctx.fillStyle = "darkgreen";
+        ctx.strokeRect(0,0,eCanvas.width, eCanvas.height);
+        ctx.fillText("Game over", 200, 200);
+      }
+
+      }
+
+
+      addEventListener("keydown", function(e){
+        switch (e.keyCode) {
+          case 32:
+          if(cooldown<0){
+          cooldown = 0.4;
+          player.Jump();
+        }
+          break;
+          case 37:
+          player.mvRight = false;
+          player.mvLeft = true;
+          player.mvUp = false;
+          player.mvDown = false;
+            break;
+          case 38:
+          player.mvRight = false;
+          player.mvLeft = false;
+          player.mvUp = true;
+          player.mvDown = false;
+            break;
+          case 39:
+          player.mvRight = true;
+          player.mvLeft = false;
+          player.mvUp = false;
+          player.mvDown = false;
+            break;
+          case 40:
+          player.mvRight = false;
+          player.mvLeft = false;
+          player.mvUp = false;
+          player.mvDown = true;
+            break;
+          default:
+
+        }
+      });
+
+
+      addEventListener("keyup", function(e){
+        switch (e.keyCode) {
+          case 37:
+             player.mvLeft = false;
+            break;
+          case 38:
+             player.mvUp = false;
+            break;
+          case 39:
+               player.mvRight = false;
+            break;
+          case 40:
+           player.mvDown = false;
+            break;
+          default:
+
+        }
+      });
+
+    </script>
+  </body>
+
+
+
+
+</html>
